@@ -1,1 +1,1 @@
-cargo run --release data/measurements.txt
+cargo run --release data/measurements.txt $1

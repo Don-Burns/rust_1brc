@@ -91,6 +91,8 @@ pub fn process_data(data: String) -> String {
 
 mod tests {
 
+    use super::*;
+
     #[test]
     fn test_process_data() {
         let data = "Halifax;12.9
