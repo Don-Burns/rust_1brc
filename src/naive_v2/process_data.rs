@@ -39,11 +39,13 @@ impl CityMeasurements {
     }
 
     fn to_string(&self) -> String {
-        let average = self.sum / self.count as f64;
+        let mut average = self.sum / self.count as f64;
+        // round to 1 decimal place always rounding up
+        average = ((average * 10.0) + 0.4).round() / 10.0;
 
         format!(
             "{}={:.1}/{:.1}/{:.1}",
-            self.name, self.min, self.max, average
+            self.name, self.min, average, self.max
         )
     }
 }
@@ -81,7 +83,7 @@ pub fn process_data(data: String) -> String {
     ordered_city_list.sort();
 
     format!(
-        "{{{}}}",
+        "{{{}}}\n",
         ordered_city_list
             .into_iter()
             .map(|city_name| {
@@ -111,9 +113,50 @@ Dodoma;22.2
 Tauranga;38.2
 "
         .to_string();
-        let expected = "{Adelaide=15.0/15.0/15.0, Cabo San Lucas=14.9/14.9/14.9, Dodoma=22.2/22.2/22.2, Halifax=12.9/12.9/12.9, Karachi=15.4/15.4/15.4, Pittsburgh=9.7/9.7/9.7, Ségou=25.7/25.7/25.7, Tauranga=38.2/38.2/38.2, Xi'an=24.2/24.2/24.2, Zagreb=12.2/12.2/12.2}"
+        let expected = "{Adelaide=15.0/15.0/15.0, Cabo San Lucas=14.9/14.9/14.9, Dodoma=22.2/22.2/22.2, Halifax=12.9/12.9/12.9, Karachi=15.4/15.4/15.4, Pittsburgh=9.7/9.7/9.7, Ségou=25.7/25.7/25.7, Tauranga=38.2/38.2/38.2, Xi'an=24.2/24.2/24.2, Zagreb=12.2/12.2/12.2}\n"
         .to_string();
         let result = process_data(data);
         assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_process_data_1brc_repo_samples() {
+        use std::fs;
+        use std::path::Path;
+
+        let test_path = Path::new("./src/test_data/samples").canonicalize().unwrap();
+
+        let files = fs::read_dir(test_path.canonicalize().unwrap())
+            .expect("Unable to read test_data/samples directory");
+
+        for file in files {
+            let file = file.expect("Failed to read file").path();
+            let file_extension = file.extension();
+            match file_extension {
+                Some(ext) => match ext.to_str() {
+                    Some("txt") => {
+                        let data = fs::read_to_string(file.clone()).unwrap();
+                        let file_name = file
+                            .file_name()
+                            .unwrap()
+                            .to_str()
+                            .unwrap()
+                            .split(".")
+                            .collect::<Vec<_>>()[0];
+
+                        let out_file_path = test_path.join(format!("{}.out", file_name));
+                        let expected = fs::read_to_string(&out_file_path).expect(
+                            format!("Could not read expected output file {:?}", out_file_path)
+                                .as_str(),
+                        );
+                        let result = process_data(data);
+                        assert_eq!(result, expected, "Failed for file {:?}", file);
+                        println!("Passed for file {:?}", file);
+                    }
+                    _ => continue,
+                },
+                None => continue,
+            }
+        }
     }
 }
