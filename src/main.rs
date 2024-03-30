@@ -1,4 +1,5 @@
 pub mod naive;
+pub mod naive_v2;
 
 use std::env::args;
 
@@ -19,7 +20,11 @@ fn main() {
             println!("Using naive strategy");
             naive::run(cli_args.file_path.as_str())
         }
-        _ => panic!("Invalid strategy, valid options are: naive"),
+        "naive_v2" => {
+            println!("Using naive_v2 strategy");
+            naive_v2::run(cli_args.file_path.as_str())
+        }
+        _ => panic!("Invalid strategy, valid options are: naive, naive_v2"),
     };
     println!("{}", result)
 }
