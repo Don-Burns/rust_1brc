@@ -1,6 +1,7 @@
 pub mod buffer_lines;
 pub mod naive;
 pub mod naive_v2;
+pub mod threads;
 
 use std::env::args;
 
@@ -28,6 +29,10 @@ fn main() {
         "buffer_lines" => {
             println!("Using buffer_lines strategy");
             buffer_lines::run(cli_args.file_path.as_str())
+        }
+        "threads" => {
+            println!("Using threads strategy");
+            threads::run(cli_args.file_path.as_str())
         }
         _ => panic!("Invalid strategy, valid options are: naive, naive_v2, buffer_lines"),
     };

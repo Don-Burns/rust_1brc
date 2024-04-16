@@ -21,9 +21,9 @@ If not specified a default will be used.
 
 ### Approaches
 
-- Naive: Reads the file into memory all at once as a stirng and iterates line by line, storing all the measurements in a vector.
+- Naive: Reads the file into memory all at once as a string and iterates line by line, storing all the measurements in a vector.
     Calculates the average, min and max values all at the end by processing the vector once the file is fully processed and parsed.
-- Naive_v2: Reads the file into memory all at once as a stirng and iterates line by line, difference with `Naive` is that it calculates the average, min and max values as it processes the file.
+- Naive_v2: Reads the file into memory all at once as a string and iterates line by line, difference with `Naive` is that it calculates the average, min and max values as it processes the file.
 - buffer_lines: Reads the file line by line, but as a buffer of lines. Uses the same logic as `Naive_v2` to calculate the average, min and max values.
 
 ### Times
